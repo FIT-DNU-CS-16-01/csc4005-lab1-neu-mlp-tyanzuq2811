@@ -1,0 +1,116 @@
+{
+  "best_val_loss": 1.4466766048360753,
+  "best_val_acc": 0.45925925925925926,
+  "test_loss": 1.4281438995290685,
+  "test_acc": 0.45555555555555555,
+  "class_names": [
+    "Crazing",
+    "Inclusion",
+    "Patches",
+    "Pitted_Surface",
+    "Rolled-in_Scale",
+    "Scratches"
+  ],
+  "classification_report": {
+    "Crazing": {
+      "precision": 0.42105263157894735,
+      "recall": 0.17777777777777778,
+      "f1-score": 0.25,
+      "support": 45.0
+    },
+    "Inclusion": {
+      "precision": 0.3425925925925926,
+      "recall": 0.8222222222222222,
+      "f1-score": 0.48366013071895425,
+      "support": 45.0
+    },
+    "Patches": {
+      "precision": 0.8387096774193549,
+      "recall": 0.5777777777777777,
+      "f1-score": 0.6842105263157895,
+      "support": 45.0
+    },
+    "Pitted_Surface": {
+      "precision": 0.4666666666666667,
+      "recall": 0.6222222222222222,
+      "f1-score": 0.5333333333333333,
+      "support": 45.0
+    },
+    "Rolled-in_Scale": {
+      "precision": 0.45098039215686275,
+      "recall": 0.5111111111111111,
+      "f1-score": 0.4791666666666667,
+      "support": 45.0
+    },
+    "Scratches": {
+      "precision": 1.0,
+      "recall": 0.022222222222222223,
+      "f1-score": 0.043478260869565216,
+      "support": 45.0
+    },
+    "accuracy": 0.45555555555555555,
+    "macro avg": {
+      "precision": 0.5866669934024041,
+      "recall": 0.45555555555555555,
+      "f1-score": 0.4123081529840515,
+      "support": 270.0
+    },
+    "weighted avg": {
+      "precision": 0.5866669934024041,
+      "recall": 0.45555555555555555,
+      "f1-score": 0.41230815298405155,
+      "support": 270.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      8,
+      10,
+      1,
+      17,
+      9,
+      0
+    ],
+    [
+      0,
+      37,
+      0,
+      5,
+      3,
+      0
+    ],
+    [
+      1,
+      1,
+      26,
+      9,
+      8,
+      0
+    ],
+    [
+      3,
+      10,
+      2,
+      28,
+      2,
+      0
+    ],
+    [
+      4,
+      17,
+      1,
+      0,
+      23,
+      0
+    ],
+    [
+      3,
+      33,
+      1,
+      1,
+      6,
+      1
+    ]
+  ],
+  "resolved_data_dir": "d:\\DeepLearning\\DL\\csc4005-lab1-neu-mlp-tyanzuq2811\\NEU-CLS_extracted"
+}
