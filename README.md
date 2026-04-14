@@ -1,77 +1,78 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/LiEKMyvY)
-# CSC4005 Lab 1 – NEU MLP Starter
+# 📖 Hướng Dẫn Chạy & Huấn Luyện (Run Guide) - Lab 1: NEU-CLS bằng MLP
 
-Starter kit này dùng cho **Lab 1 – Training & Regularization** của CSC4005. Repo **không chứa thư mục `data/`**. Sinh viên chạy trực tiếp với đường dẫn tới bộ dữ liệu ngoài repo `NEU-CLS.zip`.
+Đây là tài liệu đính kèm đáp ứng mục tiêu **Hướng dẫn chạy code (Run README)** thuộc đồ án Lab 1 – Training & Regularization của môn CSC4005. 
+Bài thực hành mô phỏng lại việc giải quyết bộ dữ liệu NEU Surface Defect Database để phân loại 6 lỗi bề mặt thép đặc trưng.
 
-Nội dung lab: so sánh ít nhất 3 cấu hình, xem learning curves, tránh dùng test để chọn mô hình, và kết luận cấu hình tốt nhất dựa trên validation. Case study là NEU Surface Defect Database với 6 lớp lỗi bề mặt thép.
+---
 
-## 1. Cấu trúc repo
-```text
-csc4005_lab1_neu_mlp_starter/
-├── .github/workflows/validate-lab1.yml
-├── README.md
-├── REPORT_TEMPLATE.md
-├── requirements.txt
-├── configs/
-│   └── baseline.json
-├── docs/
-│   └── LAB_GUIDE_LAB1.md
-│   └── WANDB_GUIDE.md
-├── notebooks/
-├── outputs/
-├── ci/
-│   ├── check_structure.py
-│   └── smoke_train.py
-└── src/
-    ├── __init__.py
-    ├── dataset.py
-    ├── model.py
-    ├── train.py
-    └── utils.py
-```
+## 1. Môi trường & Cài đặt
 
-## 2. Cài đặt
+Bạn sẽ cần cài đặt Miniconda/Anaconda cơ bản. Các bước tiếp cận từ gốc:
+
 ```bash
-conda activate csc4005-dl
+# Kích hoạt hoặc thiết lập môi trường ảo ban đầu của bạn (ví dụ deep_learning)
+conda activate deep_learning
+
+# Update nền tảng và nạp thư viện quy định
 pip install --upgrade pip
 pip install -r requirements.txt
+
+# Cài thêm 2 thư viện phụ phục vụ báo cáo và vẽ đồ thị (quan trọng)
+pip install wandb matplotlib
 ```
 
-## 3. Dữ liệu
-Repo này **không có thư mục `data/`**. Bạn phải cung cấp đường dẫn dữ liệu khi chạy.
+*(Lưu ý: Nếu bạn muốn đồng bộ biểu đồ huấn luyện như trong bảng báo cáo, nhớ chạy thêm `wandb login` tại Terminal để xác thực API Key của hệ thống online trước khi ấn chạy lệnh).*
 
-Hỗ trợ 2 kiểu dữ liệu:
-- **Kiểu A:** thư mục lớp riêng `Crazing/`, `Inclusion/`, ...
-- **Kiểu B:** file ZIP hoặc thư mục phẳng có tên ảnh kiểu `crazing_10.jpg`, `rolled-in_scale_21.jpg`, ...
+---
 
-Ví dụ với đúng bộ dữ liệu do giảng viên cung cấp:
+## 2. Quản Lý Dữ Liệu (NEU-CLS Dataset)
+
+Giống như thông lệ Git thông thường, thư mục này không đính kèm file ảnh Dataset nặng nề. Do đó, bạn cần:
+- Sở hữu tệp `NEU-CLS.zip` hoặc thư mục ảnh đã giải nén trên máy trạm của bạn.
+- Truyền thẳng đường dẫn tuyệt đối của nó cho hàm `--data_dir`. Hệ thống sẽ **tự động giải nén** và đưa vào DataLoader!
+
+Ví dụ đường dẫn mẫu được dùng trong các báo cáo cho máy: `"d:\DeepLearning\DL\csc4005-lab1-neu-mlp-tyanzuq2811\NEU-CLS.zip"`
+
+---
+
+## 3. Các Lệnh Huấn Luyện Chính (Training Commands)
+
+Bên dưới là các lệnh đã được cấu hình chặt chẽ để thi hành logic `src/train.py`. Để theo dõi lý luận tại sao lại chia các cấu hình tinh chỉnh như dưới đây, bạn hãy tham khảo file **`REPORT.md`**.
+
+### Lệnh Mốc: Chạy mô hình Baseline tiêu chuẩn
+Đây là cấu hình chuẩn hóa với AdamW, dùng làm điểm neo (Baseline) đánh giá hiệu suất.
 ```bash
-python -m src.train --data_dir /duong_dan/NEU-CLS.zip --run_name quick_test
+python -m src.train --data_dir "NEU-CLS.zip" --project csc4005-lab1-neu-mlp --run_name baseline_adamw --optimizer adamw --lr 0.001 --weight_decay 0.0001 --dropout 0.3 --epochs 20 --batch_size 32 --img_size 64 --patience 5 --augment --use_wandb
 ```
 
-## 4. Chạy baseline chuẩn của Lab 1
+### Lệnh Phá Kỷ Lục: Run F (Best Config)
+Đây là cấu hình cao nhất cho ra Test Accuracy **55.93%**, đạt chóp giới hạn của mạng chuẩn MLP. (Kết hợp mở rộng số Tế bào nơ-ron lên `1024-512-128`, kết hợp SGD truyền động chậm gán với LR cất cánh cao `0.01` qua Auto LRScheduler):
 ```bash
-python -m src.train   --data_dir /duong_dan/NEU-CLS.zip   --project csc4005-lab1-neu-mlp   --run_name baseline_adamw   --optimizer adamw   --lr 0.001   --weight_decay 0.0001   --dropout 0.3   --epochs 20   --batch_size 32   --img_size 64   --patience 5   --augment   --use_wandb
+python -m src.train --data_dir "NEU-CLS.zip" --project csc4005-lab1-neu-mlp --run_name run_f_hyper_sgd --optimizer sgd --lr 0.01 --weight_decay 0.0 --dropout 0.3 --hidden_dims 1024 512 128 --epochs 50 --scheduler plateau --batch_size 32 --img_size 64 --patience 10 --augment --use_wandb
 ```
 
-## 5. Kết quả đầu ra
-Mỗi run sẽ được lưu vào `outputs/<run_name>/` gồm:
-- `best_model.pt`
-- `history.csv`
-- `curves.png`
-- `confusion_matrix.png`
-- `metrics.json`
+*(Lưu ý: Bạn bắt buộc phải đổi đuôi `"NEU-CLS.zip"` thành đường dẫn nằm trên máy thật của bạn để Script không xả lỗi File Not Found nhé).*
 
-## 6. W&B
-Tên project thống nhất là:
+---
+
+## 4. Kiểm thử kết quả trực quan (Testing & Plots)
+
+Trong file core `src/train.py`, hệ thống tự động xuất bộ test cho Test Set khi vòng lặp dừng. 
+Tham số trọng số lưu ở đỉnh cao (`best_model.pt`), dữ liệu Log `history.csv`, đường cong Loss (`curves.png`), ma trận nhầm lẫn (`confusion_matrix.png`) và Json Report đều nằm sẵn trong đường viền:
 ```text
-csc4005-lab1-neu-mlp
+outputs/<run_name>/
 ```
 
-Xem hướng dẫn chi tiết tại `docs/WANDB_GUIDE.md`.
-
-## 7. Kiểm tra nhanh repo
+### Sinh ảnh kiểm định (Đúng / Sai)
+Để bứt phá thêm 1 yêu cầu nhỏ của Lab về trực quan hóa ảnh bị phán quyết sai hoặc chỉ định trúng từ tập Test: Hãy kích hoạt script ngoại vi (Được hard-code theo Output của Best Model - Run F):
 ```bash
-python ci/check_structure.py
-python ci/smoke_train.py
+python plot_examples.py
 ```
+Nó sẽ rà trúng file Tensor Model hiện tại và in tấm ảnh `predictions.png` vào trong chính thư mục `outputs/run_f_hyper_sgd/`.
+
+---
+
+## 5. Danh mục các link đánh giá 
+- **`REPORT.md`**: File Đọc Toàn Bộ Thí Nghiệm (Có đầy đủ lý lẽ Overfitting / Underfitting, kết cấu mô hình và trích xuất Validation khoa học).
+- **`Trang W&B Monitoring`**: [Theo dõi Lệnh chạy Dashboard tại nền tảng Web](https://wandb.ai/models-dai-nam-university/csc4005-lab1-neu-mlp)
+
