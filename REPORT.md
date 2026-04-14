@@ -1,5 +1,8 @@
 # Báo cáo Thực hành Lab 1: NEU-CLS bằng MLP
 
+**Truy cập W&B Dashboard:** [Dự án csc4005-lab1-neu-mlp trên Weights & Biases](https://wandb.ai/models-dai-nam-university/csc4005-lab1-neu-mlp)
+*(Ghi chú: Đường dẫn này thể hiện toàn bộ ảnh chụp dashboard, logs biểu đồ trực tuyến và lịch sử cấu hình của tất cả các lần chạy).*
+
 ## 1. Bảng so sánh các cấu hình
 
 Dưới đây là 6 cấu hình thử nghiệm (bao gồm 3 lệnh gợi ý gốc, 2 lệnh kiểm định chéo khoa học, và 1 lệnh mở rộng giới hạn):
@@ -12,6 +15,22 @@ Dưới đây là 6 cấu hình thử nghiệm (bao gồm 3 lệnh gợi ý gố
 | **Run D** | AdamW | 0.01 | 0.0001 | 0.3 | Không | 14.20% | 28.89% | 26.67% | Kiểm chứng ảnh hưởng của LR lớn. |
 | **Run E** | SGD | 0.001 | 0.0001 | 0.3 | Không | 26.11% | 24.07% | 24.44% | Kiểm chứng tốc độ của SGD chậm. |
 | **Run F (Best)** | SGD | 0.01 | 0.0 | 0.3 | Lớp ẩn khổng lồ, <br> 50 Epochs, <br> LR_Scheduler. | 56.03% | 60.74% | **55.93%** | Phá vỡ Underfitting, bứt giới hạn MLP. |
+
+### 1.1 Tổng hợp Biểu đồ Học tập (Learning Curves)
+
+Trực quan hóa diễn biến hội tụ (Loss và Accuracy) qua từng Epoch tương ứng với toàn bộ các cấu hình đã chạy:
+
+| **1. Baseline (AdamW)** | **2. Run B (SGD)** |
+|:---:|:---:|
+| ![Baseline](outputs/baseline_adamw/curves.png) | ![Run B](outputs/run_b_sgd/curves.png) |
+
+| **3. Run C (Strong Reg)** | **4. Run D (AdamW + LR lớn)** |
+|:---:|:---:|
+| ![Run C](outputs/run_c_strong_reg/curves.png) | ![Run D](outputs/run_d_adamw_high_lr/curves.png) |
+
+| **5. Run E (SGD chậm)** | **6. Run F (Best Model)** |
+|:---:|:---:|
+| ![Run E](outputs/run_e_sgd_controlled/curves.png) | ![Run F](outputs/run_f_hyper_sgd/curves.png) |
 
 ## 2. So bó đũa, chọn cột cờ (Lựa chọn Best Model)
 
