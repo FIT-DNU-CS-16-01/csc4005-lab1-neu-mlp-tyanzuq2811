@@ -72,8 +72,12 @@ Trích xuất đo lường chi tiết trên 6 nhóm khuyết tật (tổng cộn
 **1. Hình ảnh dự đoán đúng/sai (Khởi tạo từ tập test mù):**
 ![Predictions](outputs/run_f_hyper_sgd/predictions.png)
 
-**2. Ma trận nhầm lẫn (Confusion Matrix):** Nhận diện bị rối với cường độ cao nhất ở mục Crazing.
+**2. Ma trận nhầm lẫn (Confusion Matrix) & Phân tích chuyên sâu:** 
 ![Confusion Matrix](outputs/run_f_hyper_sgd/confusion_matrix.png)
+*(Phân tích ma trận Run F)*:
+- **Ưu điểm (Đường chéo chính):** Điểm giao thoa cao nhất nằm ở cục lồi lớn `Patches` (bắt trúng 40/45) và lỗi vảy nhám `Rolled-in_Scale` (bắt trúng 32/45). Chứng tỏ hệ thống phân giải tốt các mảng lỗi có kết cấu thô to khổng lồ.
+- **Điểm mù (Phân bổ ngoài đường chéo):** Ở hàng `Crazing`, trong 45 ảnh lỗi rạn nứt tơ nhện dội vào, AI chỉ nhận diện trúng 12 trường hợp. Nó gán nhầm 15 ảnh thành `Rolled-in_Scale` và 9 ảnh thành tổ ong `Pitted_Surface`. Tại hàng xước `Scratches`, model gán nhầm tới 11 ảnh xước dài này thành dị vật `Inclusion`!
+- **Tóm lược:** Ma trận bóc trần sự thật rằng mạng MLP thuần túy đang bị loạn thị nặng khi phân tích cấu trúc không gian vi mô li ti. Việc san phẳng ảnh 64x64 thành dải hẹp khiến model đánh đồng vết nứt gãy dài với các mảng rỗ. (Lý giải lý do vì sao accuracy kịch kim cũng chỉ dừng ở ~56%).
 
 **3. Động lực hội tụ (Learning Curves):** 
 ![Learning Curve](outputs/run_f_hyper_sgd/curves.png)
