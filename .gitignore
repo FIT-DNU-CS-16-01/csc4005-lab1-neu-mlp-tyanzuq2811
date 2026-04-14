@@ -6,3 +6,4 @@ outputs/*
 !outputs/.gitkeep
 *_extracted/
 *.pt
+NEU-CLS.zip
